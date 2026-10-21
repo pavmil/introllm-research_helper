@@ -4,7 +4,7 @@
 
 ## 1. Окружение
 
-- Python 3.11 (`.python-version`), менеджер — [uv](https://docs.astral.sh/uv/). `pip install` и `requirements.txt` не используем.
+- Python 3.12+ (`.python-version` — 3.12), менеджер — [uv](https://docs.astral.sh/uv/). `pip install` и `requirements.txt` не используем.
 - `make install` ставит зависимости и git-хуки pre-commit. `make check` — то же, что CI.
 - Зависимости зафиксированы в `uv.lock`. Lock-файл коммитится, CI ставит строго по нему (`uv sync --locked`).
 

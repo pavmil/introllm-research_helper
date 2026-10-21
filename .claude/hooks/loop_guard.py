@@ -1,10 +1,11 @@
 #!/usr/bin/env python3
 """Claude Code hook that stops the development agent from looping (ADR-0002, AGENTS.md §6).
 
-Wired in .claude/settings.json:
+Wired in .claude/settings.json through ``run_loop_guard.sh``, which runs this file with the
+project interpreter (.venv, Python 3.12) and never blocks on its own setup problems:
 
-* PreToolUse  (Bash|Edit|MultiEdit|Write)          -> ``loop_guard.py pre``
-* PostToolUse and PostToolUseFailure (Bash)        -> ``loop_guard.py post``
+* PreToolUse  (Bash|Edit|MultiEdit|Write)          -> ``run_loop_guard.sh pre``
+* PostToolUse and PostToolUseFailure (Bash)        -> ``run_loop_guard.sh post``
 
 Rules (exit code 2 blocks the tool call; stderr is shown to the agent):
 
@@ -17,8 +18,9 @@ Rules (exit code 2 blocks the tool call; stderr is shown to the agent):
    to stop and report progress to the human.
 
 The hook must never break a session: on any internal error it exits 0 (fails open).
-State: .claude/state/loop_guard/<session_id>.json (gitignored).
-Runs on the system python3 (3.9 on macOS): standard library and pre-3.10 syntax only.
+State: .claude/state/loop_guard/<session_id>.json next to this script (gitignored);
+LOOP_GUARD_STATE_DIR overrides the directory (used by tests). Standard library only, so the
+hook starts fast.
 """
 
 from __future__ import annotations
@@ -57,9 +59,12 @@ def _env_int(name: str, default: int) -> int:
 
 
 def _state_path(session_id: str) -> Path:
-    root = Path(os.environ.get("CLAUDE_PROJECT_DIR") or os.getcwd())
+    # Located from the script itself, not from CLAUDE_PROJECT_DIR: that variable can be stale
+    # when a session moves between folders.
+    default_dir = Path(__file__).resolve().parent.parent / "state" / "loop_guard"
+    state_dir = Path(os.environ.get("LOOP_GUARD_STATE_DIR") or default_dir)
     safe = "".join(ch for ch in session_id if ch.isalnum() or ch in "-_") or "unknown"
-    return root / ".claude" / "state" / "loop_guard" / f"{safe}.json"
+    return state_dir / f"{safe}.json"
 
 
 def _load(path: Path) -> State:

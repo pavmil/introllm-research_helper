@@ -24,7 +24,7 @@
 | [T-0001](0001-bootstrap-repository.md) | Bootstrap репозитория и инфраструктуры для агентов | agent | done |
 | [T-0002](0002-s2-retriever-for-storm.md) | Клиент Semantic Scholar и retriever для STORM | agent | todo |
 | [T-0003](0003-b0-citation-checker.md) | Проверка существования ссылок для B0 | agent | todo |
-| [T-0004](0004-python-312-and-first-push.md) | Python 3.12, надёжный запуск хука и первый push | agent | in-progress |
+| [T-0004](0004-python-312-and-first-push.md) | Python 3.12, надёжный запуск хука и первый push | agent | done |
 
 Задачи людей на неделю 1 — в [плане недели](../plans/week-01.md):
 - ключ S2;

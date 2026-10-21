@@ -39,7 +39,7 @@ flowchart LR
 
 ## Быстрый старт
 
-Нужен [uv](https://docs.astral.sh/uv/). Python 3.11 uv поставит сам.
+Нужен [uv](https://docs.astral.sh/uv/). Python 3.12 uv поставит сам. `make install` нужен и для хука против зацикливания: он запускается из `.venv` проекта.
 
 ```bash
 make install
@@ -126,16 +126,14 @@ introllm-research_helper/
 - **Задачи.** Агент работает по файлу задачи из [docs/tasks/](docs/tasks/), написанному по [шаблону](docs/tasks/_TEMPLATE.md): контекст, scope, контракты, критерии приёмки, стоп-условия.
 - **Защита от зацикливания** — на трёх уровнях:
   - в коде продукта каждый цикл агентов идёт через `LoopGuard`;
-  - в работе dev-агента хук `.claude/hooks/loop_guard.py` блокирует повторы одной и той же неудачной команды и откаты собственных правок;
+  - в работе dev-агента хук `.claude/hooks/loop_guard.py` блокирует повторы одной и той же неудачной команды и откаты собственных правок. Запускается через `run_loop_guard.sh` из `.venv`; если окружения нет, хук пропускается, а не блокирует;
   - в CI стоят таймауты на тесты и на job.
 
 ## CI/CD
 
-GitHub Actions ([.github/workflows/ci.yml](.github/workflows/ci.yml)) на каждый push в `main` и на каждый PR:
-- `make check` на Python 3.11;
-- smoke-тест хука на Python 3.9 — это системный python3 на macOS.
+GitHub Actions ([.github/workflows/ci.yml](.github/workflows/ci.yml)) на каждый push в `main` и на каждый PR запускает `make check` на Python 3.12. В него входят и тесты хука: он запускается ровно той командой, что записана в `.claude/settings.json`.
 
-**Что сделать после первого push:** включи в настройках GitHub branch protection для `main` с обязательными проверками `CI / check` и `CI / hook-compat`. Тогда изменение без зелёных тестов не попадёт в `main`.
+**Защита `main`:** в настройках GitHub — правило для `main` с обязательной проверкой `check`. После этого изменения попадают в `main` только через PR с зелёным CI.
 
 CD пока не нужен: деплоить нечего. Вернёмся к нему на этапе демо (неделя 12).
 

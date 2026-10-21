@@ -26,7 +26,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "python3 \"$CLAUDE_PROJECT_DIR/.claude/hooks/loop_guard.py\" pre",
+            "command": "for d in \"$CLAUDE_PROJECT_DIR\" \"$PWD\"; do if [ -f \"$d/.claude/hooks/run_loop_guard.sh\" ]; then exec sh \"$d/.claude/hooks/run_loop_guard.sh\" pre; fi; done",
             "timeout": 10
           }
         ]
@@ -38,7 +38,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "python3 \"$CLAUDE_PROJECT_DIR/.claude/hooks/loop_guard.py\" post",
+            "command": "for d in \"$CLAUDE_PROJECT_DIR\" \"$PWD\"; do if [ -f \"$d/.claude/hooks/run_loop_guard.sh\" ]; then exec sh \"$d/.claude/hooks/run_loop_guard.sh\" post; fi; done",
             "timeout": 10
           }
         ]
@@ -50,7 +50,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "python3 \"$CLAUDE_PROJECT_DIR/.claude/hooks/loop_guard.py\" post",
+            "command": "for d in \"$CLAUDE_PROJECT_DIR\" \"$PWD\"; do if [ -f \"$d/.claude/hooks/run_loop_guard.sh\" ]; then exec sh \"$d/.claude/hooks/run_loop_guard.sh\" post; fi; done",
             "timeout": 10
           }
         ]

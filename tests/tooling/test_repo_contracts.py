@@ -40,7 +40,7 @@ def test_claude_settings_hooks_point_to_existing_scripts(repo_root: Path) -> Non
     ]
     assert commands, "loop-guard hooks must be configured"
     for command in commands:
-        script = re.search(r"\$CLAUDE_PROJECT_DIR/([^\"\s]+\.py)", command)
+        script = re.search(r"(\.claude/hooks/[\w.-]+\.sh)", command)
         assert script, command
         assert (repo_root / script.group(1)).is_file(), command
 

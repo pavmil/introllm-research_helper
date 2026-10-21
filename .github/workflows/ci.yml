@@ -32,27 +32,7 @@ jobs:
       - name: Install dependencies strictly from uv.lock
         run: uv sync --locked --all-groups
 
+      # Includes tests/tooling: the loop-guard hook is exercised through the exact command
+      # from .claude/settings.json and the project .venv created by `uv sync` above.
       - name: Lint, format, types, tests (same as local `make check`)
         run: make check
-
-  hook-compat:
-    name: hook-compat
-    runs-on: ubuntu-latest
-    timeout-minutes: 5
-    steps:
-      - uses: actions/checkout@v4
-
-      # The loop-guard hook runs on the system python3, which is 3.9 on macOS.
-      - uses: actions/setup-python@v5
-        with:
-          python-version: "3.9"
-
-      - name: Loop-guard hook smoke test on Python 3.9
-        run: |
-          export CLAUDE_PROJECT_DIR="$RUNNER_TEMP/hook-smoke"
-          mkdir -p "$CLAUDE_PROJECT_DIR"
-          echo '{"session_id":"ci","tool_name":"Bash","tool_input":{"command":"make test"}}' \
-            | python .claude/hooks/loop_guard.py pre
-          echo '{"session_id":"ci","tool_name":"Bash","tool_input":{"command":"make test"},"tool_response":{"stdout":"ok"}}' \
-            | python .claude/hooks/loop_guard.py post
-          test -f "$CLAUDE_PROJECT_DIR/.claude/state/loop_guard/ci.json"
