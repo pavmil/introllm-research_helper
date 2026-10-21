@@ -1,0 +1,58 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  check:
+    name: check
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v6
+        with:
+          enable-cache: true
+
+      - name: Install Python from .python-version
+        run: uv python install
+
+      - name: Install dependencies strictly from uv.lock
+        run: uv sync --locked --all-groups
+
+      - name: Lint, format, types, tests (same as local `make check`)
+        run: make check
+
+  hook-compat:
+    name: hook-compat
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+
+      # The loop-guard hook runs on the system python3, which is 3.9 on macOS.
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.9"
+
+      - name: Loop-guard hook smoke test on Python 3.9
+        run: |
+          export CLAUDE_PROJECT_DIR="$RUNNER_TEMP/hook-smoke"
+          mkdir -p "$CLAUDE_PROJECT_DIR"
+          echo '{"session_id":"ci","tool_name":"Bash","tool_input":{"command":"make test"}}' \
+            | python .claude/hooks/loop_guard.py pre
+          echo '{"session_id":"ci","tool_name":"Bash","tool_input":{"command":"make test"},"tool_response":{"stdout":"ok"}}' \
+            | python .claude/hooks/loop_guard.py post
+          test -f "$CLAUDE_PROJECT_DIR/.claude/state/loop_guard/ci.json"

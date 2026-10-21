@@ -1,0 +1,18 @@
+# Роли → модели (design-doc §5.4, §7). ПОКА НЕ ЗАГРУЖАЕТСЯ КОДОМ: шлюз LLM появится в отдельной задаче.
+# Правило: в одном сравнении все системы используют одинаковые модели на одинаковых ролях,
+# а судья для оценки — модель другого семейства (design-doc §8.5).
+# Значения — идентификаторы litellm; null = ещё не выбрано.
+
+roles:
+  scope: null
+  discovery: null
+  screener: null
+  asker: null
+  expert: null
+  consolidator: null
+  gap_critic: null
+  writer: null
+  eval_judge: null   # другое семейство, чем writer и verifier
+
+verifier:
+  model: null        # NLI-модель (DeBERTa-класс), см. design-doc §7

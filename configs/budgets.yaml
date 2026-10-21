@@ -1,0 +1,22 @@
+# Бюджеты одного прогона системы (design-doc §5.5, ADR-0002).
+# Загружаются в research_helper.controller.Budget через research_helper.config.load_budget.
+# Лимит включительный: max_steps: 200 разрешает 200 шагов, 201-й прерывает прогон.
+
+default:
+  max_steps: 200
+  max_llm_calls: 300
+  max_tokens: 2000000
+  max_cost_usd: 5.0
+  max_wall_seconds: 900
+  max_repeats: 3            # одно и то же действие с теми же аргументами
+  max_no_progress_steps: 15 # шагов подряд без новых проверенных утверждений в ledger
+
+# Быстрые прогоны: регрессионный набор, отладка
+smoke:
+  max_steps: 50
+  max_llm_calls: 60
+  max_tokens: 300000
+  max_cost_usd: 1.0
+  max_wall_seconds: 300
+  max_repeats: 2
+  max_no_progress_steps: 8

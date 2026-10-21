@@ -1,0 +1,40 @@
+# FreshSci golden set — одна запись на вопрос.
+# Правило: запись заполняется ДО запуска любой системы на этом вопросе.
+# Статьи идентифицируются arXiv ID (или S2 corpus ID, если на arXiv нет).
+
+- id: fs-dev-001
+  split: dev                    # dev | test
+  created: 2026-10-21
+  author: ""                    # кто писал
+  question: ""                  # формулировка, как её задал бы пользователь
+  question_type: effectiveness  # effectiveness | comparison | methods_survey | mechanism | controversy
+  scope:
+    years: [2022, 2026]
+    constraints: []             # например: "LLM >= 7B", "zero-shot", "английский"
+  fresh: false                  # true, если >= половины key_papers вышли после cutoff выбранной LLM
+  llm_cutoff_ref: ""            # модель и её cutoff, относительно которых считается fresh
+  run_on_week1: false           # один из 5 вопросов для прогонов недели 1
+
+  key_points:                   # 5–10 пунктов, которые обязан покрыть хороший обзор
+    - id: kp1
+      text: ""
+      must_have: true           # без этого пункта обзор считается неполным
+      supporting_papers: []     # ["arXiv:XXXX.XXXXX"]
+    - id: kp2
+      text: ""
+      must_have: false
+      supporting_papers: []
+
+  key_papers:                   # 3–8 статей, без которых обзор неполон
+    - id: ""                    # "arXiv:XXXX.XXXXX"
+      year: null
+      why: ""                   # чем важна для ответа
+
+  known_conflicts:              # пусто, если противоречий не знаешь
+    - papers: []                # ["arXiv:...", "arXiv:..."]
+      kind: different_conditions  # direct | different_conditions | different_metrics | different_populations
+      note: ""
+
+  expected_verdict: MIXED       # SUPPORTED | REFUTED | MIXED | INSUFFICIENT
+  verdict_confidence: medium    # low | medium | high — насколько ты сам уверен
+  notes: ""

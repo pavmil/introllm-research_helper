@@ -1,0 +1,35 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+build/
+dist/
+
+# Tooling caches
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+coverage.xml
+htmlcov/
+
+# Secrets — never commit
+.env
+.env.local
+
+# Claude Code: personal settings and loop-guard state
+.claude/settings.local.json
+.claude/state/
+
+# Data, caches and heavy experiment outputs (keep configs, summaries and notes)
+data/
+.cache/
+experiments/**/raw/
+experiments/**/cache/
+*.pdf
+
+# OS / editors
+.DS_Store
+.idea/
+.vscode/
